@@ -9,6 +9,6 @@ public class EasingCurveDrawer: PropertyDrawer {
         EditorGUILayout.PropertyField(property.FindPropertyRelative("easingtype"), new GUIContent("Easing"));
         if(property.FindPropertyRelative("easingtype").enumValueIndex == (int)easingTypes.custom)
             EditorGUILayout.PropertyField(property.FindPropertyRelative("curve"), new GUIContent("Curve"));
-          EditorGUI.EndProperty();
+        EditorGUI.EndProperty();
     }
 }
