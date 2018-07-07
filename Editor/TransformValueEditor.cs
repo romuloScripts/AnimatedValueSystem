@@ -20,15 +20,14 @@ public class TransformValueEditor: Editor {
 		GUILayout.EndHorizontal();
 	}
 
-	void ApplyTransform (ref Transform p, string nome) {
+	void ApplyTransform (ref Transform p, string n) {
 		if (p==null) {
-			GameObject obj = new GameObject(nome);
-			obj.transform.parent = aux.transform.parent;
-			p = obj.transform;
-		}
+			p = new GameObject(n).transform;
+			p.transform.parent = aux.transform.parent;
+		}	
 		p.transform.position = aux.transform.position;
 		p.transform.rotation = aux.transform.rotation;
-		p.transform.localScale = aux.transform.localScale;
+		p.transform.localScale = aux.transform.localScale;	
 	}
 
 }

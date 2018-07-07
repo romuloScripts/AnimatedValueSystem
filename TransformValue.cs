@@ -19,9 +19,10 @@ public class TransformValue: ObjectValue {
 		}
 	}
 
+	public new Transform transform;
 	public Transform p1;
 	public Transform p2;
-	public AnimationCurve curve = AnimationCurve.Linear(0,0,1,1);
+	public EasingCurve curve;
 	public TransformType transformType = new TransformType(true, true, false);
 
 	[SerializeField, HideInInspector] private float value;
@@ -34,20 +35,25 @@ public class TransformValue: ObjectValue {
 	void OnValidate () {
 		if (!validate || p1==null || p2==null || Application.isPlaying)
 			return;
+		if(!transform) transform = base.transform;
 		setValue(_value);
 	}
 #endif
+
+	private void Reset() {
+		if(!transform) transform = base.transform;
+	}
 
 	public override float getValue () {
 		return value;
 	}
 
 	public override void setValue (float value) {
-		this.value = Mathf.Lerp (0, curve.keys [curve.keys.Length - 1].time, value);
+		this.value = value;
 		if (transformType.position)
 			transform.position = Vector3.LerpUnclamped(p1.position, p2.position, curve.Evaluate(this.value));
 		if (transformType.rotation)
-			transform.rotation = Quaternion.Lerp(p1.rotation, p2.rotation, curve.Evaluate(this.value));
+			transform.rotation = Quaternion.LerpUnclamped(p1.rotation, p2.rotation, curve.Evaluate(this.value));
 		if (transformType.scale)
 			transform.localScale = Vector3.LerpUnclamped(p1.localScale, p2.localScale, curve.Evaluate(this.value));
 	}

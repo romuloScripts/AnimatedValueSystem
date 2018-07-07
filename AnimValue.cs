@@ -9,14 +9,23 @@ public class AnimValue: ObjectValue {
 	public AnimationCurve curve = AnimationCurve.Linear(0,0,1,1);
 	public float time = 1f;
 	public float delayObjectsValue;
-	public bool UnscaleTime,ignorePause=true;
+	public bool UnscaleTime;
+	public bool onStart;
 
 	[SerializeField, HideInInspector] float v;   
 	public ObjectValue[] objectValue;
-	public UnityEvent OnIni; 
-	public UnityEvent OnEnd;
+	public Events events;
+
+	[System.Serializable]
+	public class Events{
+		public UnityEvent OnIni; 
+		public UnityEvent OnEnd;
+	}
+
+	bool playing;
 	bool reverse;
 	bool loop;
+	Coroutine c;
 
 #if UNITY_EDITOR
     [Space(15), Header("Editor"), Space(5)]
@@ -34,32 +43,54 @@ public class AnimValue: ObjectValue {
 #endregion
 
 	void Start(){
-		loop = (curve.postWrapMode == WrapMode.Loop || curve.postWrapMode == WrapMode.PingPong);
+		if(onStart)
+			Play();
 	}
 
-	void Update () {
-		UpdateAnim ();
+	IEnumerator UpdateCoroutine () {
+		StartAnim();
+		while(playing){
+			UpdateAnim();
+			yield return null;
+		}
+	}
+
+	void StartAnim(){
+		playing = true;
+		loop = (curve.postWrapMode == WrapMode.Loop || curve.postWrapMode == WrapMode.PingPong);
+		if(v == 0){
+			events.OnIni.Invoke();
+		}else if(v == 1){
+			events.OnEnd.Invoke();
+		}
 	}
 
 	void UpdateAnim(){
 		if (!reverse){
 			if(UnscaleTime)
-				v += Time.unscaledDeltaTime/time * (ignorePause?1:TimeManager.GetInstance().pause);
+				v += Time.unscaledDeltaTime/time;
 			else
 				v += Time.deltaTime/time;
 			if (v >= 1 && !loop) {
 				v = 1;
-				enabled = false;
-				OnEnd.Invoke ();
+				events.OnEnd.Invoke ();
+				playing = false;
 			}
 		}else{
 			v -= Time.deltaTime/time;
 			if (v <= 0 && !loop) {
 				v = 0;
-				enabled = false;
+				events.OnIni.Invoke();
+				playing = false;
 			}
 		}
 		setValue(v);
+	}
+
+	private void OnEnable() {
+		if(playing){
+			Play();
+		}
 	}
 
 	public override float getValue () {
@@ -71,32 +102,26 @@ public class AnimValue: ObjectValue {
 		for (int i=0; i<objectValue.Length; i++) {
 			if (objectValue [i] != null) {
 				float v = curve.Evaluate(value) * Mathf.LerpUnclamped (1, objectValue.Length, delayObjectsValue);
-				objectValue [i].setValue (v - (delayObjectsValue * i));
+				v =Mathf.Clamp01 (v - (delayObjectsValue * i));
+				objectValue [i].setValue (v);
 			}
 		}
 	}
 
 	public void Play(){
-		enabled = true;
+		if(c != null)
+			StopCoroutine(c);
+		c = StartCoroutine(UpdateCoroutine());
 	}
 
 	public void ResetAndPlay(){
-		if (reverse)
-			v = 1;
-		else
-			v = 0;
+		v = reverse?1:0;
 		Play ();
-		OnIni.Invoke();
 	}
 
 	public void PlayIfNotEnable(){
-		if(enabled) return;
-		if (reverse)
-			v = 1;
-		else
-			v = 0;
-		Play ();
-		OnIni.Invoke();
+		if(playing) return;
+		ResetAndPlay();
 	}
 
 	public void PlayForward(bool resetValue){
@@ -119,9 +144,8 @@ public class AnimValue: ObjectValue {
 	}
 
     public bool IsPlaing() {
-        return enabled;
+        return playing;
     }
-
 
 	void PlayOrReset(bool resetValue){
 		if (resetValue) {
@@ -130,7 +154,12 @@ public class AnimValue: ObjectValue {
 			Play ();
 	}
 
-    public void Stop() {
-        enabled = false;
+    public void Pause() {
+        playing = false;
+    }
+
+	public void Stop() {
+        playing = false;
+		v = reverse?1:0;
     }
 }

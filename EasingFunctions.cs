@@ -89,6 +89,7 @@ public static class EasingFunctions{
 	};
 
 	static float custom(AnimationCurve curve, float t ) {
+		t = Mathf.Lerp (0, curve.keys [curve.keys.Length - 1].time, t);
 		return curve.Evaluate(t);
 	}
 
@@ -125,7 +126,7 @@ public static class EasingFunctions{
 	}
 
 	static float easeInOutCubic( float t ) {
-		return t < 0.5 ? 4 * t * t * t : 1 + (--t) * (2 * (--t)) * (2 * t);
+		return t < 0.5f ? 4*t*t*t : (t-1)*(2*t-2)*(2*t-2)+1;
 	}
 
 	static float easeInQuart( float t ) {
