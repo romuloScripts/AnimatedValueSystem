@@ -44,7 +44,7 @@ public class AnimValue: ObjectValue {
 
 	void Start(){
 		if(onStart)
-			Play();
+			ResetAndPlay();
 	}
 
 	IEnumerator UpdateCoroutine () {
