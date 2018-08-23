@@ -175,4 +175,20 @@ public class AnimValue: ObjectValue {
 		if(obList.Count >0)
 			objectValue = obList.ToArray();
 	}
+
+	[ContextMenu("GetChildrenRevert")]
+	public void GetChildrenRevert(){
+		List<ObjectValue> obList = new List<ObjectValue>();
+     	for (int i = transform.childCount-1; i >=0; i--){
+			 ObjectValue ob = transform.GetChild(i).GetComponent<ObjectValue>();
+         	if(ob)
+			  obList.Add(ob);
+     	}
+		if(obList.Count >0){
+			objectValue = obList.ToArray();
+			for (int i = 0; i <objectValue.Length; i++){
+				objectValue[i].transform.SetSiblingIndex(i);
+			}
+		}
+	}
 }
