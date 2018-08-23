@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.Events;
 
 [AddComponentMenu("AnimValue/AnimValue")]
@@ -162,4 +163,16 @@ public class AnimValue: ObjectValue {
         playing = false;
 		v = reverse?1:0;
     }
+
+	[ContextMenu("GetChildren")]
+	public void GetChildren(){
+		List<ObjectValue> obList = new List<ObjectValue>();
+     	for (int i = 0; i < transform.childCount; i++){
+			 ObjectValue ob = transform.GetChild(i).GetComponent<ObjectValue>();
+         	if(ob)
+			  obList.Add(ob);
+     	}
+		if(obList.Count >0)
+			objectValue = obList.ToArray();
+	}
 }
