@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Events;
 
+
 [AddComponentMenu("AnimValue/AnimValue")]
 public class AnimValue: ObjectValue {
 
@@ -12,6 +13,13 @@ public class AnimValue: ObjectValue {
 	public float delayObjectsValue;
 	public bool UnscaleTime;
 	public bool onStart;
+	public UpdateType updateType = UpdateType.Update;
+
+	public enum UpdateType{
+		Update,
+		Fixed,
+		LateUpdate,
+	}
 
 	[SerializeField, HideInInspector] float v;   
 	public ObjectValue[] objectValue;
@@ -53,6 +61,22 @@ public class AnimValue: ObjectValue {
 		while(playing){
 			UpdateAnim();
 			yield return null;
+		}
+	}
+
+	IEnumerator FixedUpdateCoroutine () {
+		StartAnim();
+		while(playing){
+			yield return new WaitForFixedUpdate();
+			UpdateAnim();
+		}
+	}
+
+	IEnumerator LateUpdateCoroutine () {
+		StartAnim();
+		while(playing){
+			yield return new WaitForEndOfFrame();
+			UpdateAnim();
 		}
 	}
 
@@ -112,7 +136,21 @@ public class AnimValue: ObjectValue {
 	public void Play(){
 		if(c != null)
 			StopCoroutine(c);
-		c = StartCoroutine(UpdateCoroutine());
+		switch (updateType)
+		{
+			case UpdateType.Update:
+				c = StartCoroutine(UpdateCoroutine());
+				 break;
+			case UpdateType.Fixed: 
+				c = StartCoroutine(FixedUpdateCoroutine());
+				break;
+			case UpdateType.LateUpdate: 
+				c = StartCoroutine(LateUpdateCoroutine());
+				break;
+			default: 
+				c = StartCoroutine(UpdateCoroutine());
+				break;
+		}
 	}
 
 	public void ResetAndPlay(){
