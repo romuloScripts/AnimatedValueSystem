@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Events;
 
-
 [AddComponentMenu("AnimValue/AnimValue")]
 public class AnimValue: ObjectValue {
 
@@ -92,17 +91,14 @@ public class AnimValue: ObjectValue {
 
 	void UpdateAnim(){
 		if (!reverse){
-			if(UnscaleTime)
-				v += Time.unscaledDeltaTime/time;
-			else
-				v += Time.deltaTime/time;
+			v += (UnscaleTime?Time.unscaledDeltaTime:Time.deltaTime)/time;
 			if (v >= 1 && !loop) {
 				v = 1;
 				events.OnEnd.Invoke ();
 				playing = false;
 			}
 		}else{
-			v -= Time.deltaTime/time;
+			v -= (UnscaleTime?Time.unscaledDeltaTime:Time.deltaTime)/time;
 			if (v <= 0 && !loop) {
 				v = 0;
 				events.OnIni.Invoke();
@@ -133,7 +129,7 @@ public class AnimValue: ObjectValue {
 		}
 	}
 
-	public void Play(){
+	public void Play() {
 		if(c != null)
 			StopCoroutine(c);
 		switch (updateType)
