@@ -58,8 +58,8 @@ public class AnimValue: ObjectValue {
 	IEnumerator UpdateCoroutine () {
 		StartAnim();
 		while(playing){
-			UpdateAnim();
 			yield return null;
+			UpdateAnim();
 		}
 	}
 
