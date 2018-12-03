@@ -26,8 +26,9 @@ public class AnimValue: ObjectValue {
 
 	[System.Serializable]
 	public class Events{
-		public UnityEvent OnIni; 
+		public UnityEvent OnIni;
 		public UnityEvent OnEnd;
+		//public UnityEvent OnEndBackward; 
 	}
 
 	bool playing;
@@ -101,6 +102,7 @@ public class AnimValue: ObjectValue {
 			v -= (UnscaleTime?Time.unscaledDeltaTime:Time.deltaTime)/time;
 			if (v <= 0 && !loop) {
 				v = 0;
+				//events.OnEndBackward.Invoke();
 				events.OnIni.Invoke();
 				playing = false;
 			}
@@ -197,6 +199,11 @@ public class AnimValue: ObjectValue {
         playing = false;
 		v = reverse?1:0;
     }
+
+	public void SetTime(float t)
+	{
+		time = t;
+	}
 
 	[ContextMenu("GetChildren")]
 	public void GetChildren(){

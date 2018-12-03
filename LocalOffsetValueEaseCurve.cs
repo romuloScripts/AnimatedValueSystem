@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class LocalOffsetValueEaseCurve : ObjectValue {
 
@@ -10,11 +8,11 @@ public class LocalOffsetValueEaseCurve : ObjectValue {
 	public Vector3 posIni;
 	public bool ResetPosIni;
 
-	void Awake()
+	private void Awake()
 	{
 		if (ResetPosIni)
 			SetPosIni();
-		transform.localPosition = localPos;
+		transform.localPosition = posIni + localPos;
 	}
 
 	[Button("Set Pos Ini")]
