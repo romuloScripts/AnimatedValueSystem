@@ -48,6 +48,7 @@ public enum easingTypes{
 	easeInBounce,
 	easeOutBounce,
 	easeInOutBounce,
+	customCut,
 }
 
 public static class EasingFunctions{
@@ -86,10 +87,15 @@ public static class EasingFunctions{
 		{easingTypes.easeInBounce,(o) => easeInBounce(o.t)},
 		{easingTypes.easeOutBounce,(o) => easeOutBounce(o.t)},
 		{easingTypes.easeInOutBounce,(o) => easeInOutBounce(o.t)},
+		{easingTypes.customCut,(o) => customCut(o.curve,o.t)},
 	};
 
 	static float custom(AnimationCurve curve, float t ) {
 		t = Mathf.Lerp (0, curve.keys [curve.keys.Length - 1].time, t);
+		return curve.Evaluate(t);
+	}
+	
+	static float customCut(AnimationCurve curve, float t ) {
 		return curve.Evaluate(t);
 	}
 

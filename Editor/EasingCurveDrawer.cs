@@ -7,7 +7,8 @@ public class EasingCurveDrawer: PropertyDrawer {
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
         EditorGUI.BeginProperty(position, label, property);
         EditorGUILayout.PropertyField(property.FindPropertyRelative("easingtype"), new GUIContent("Easing"));
-        if(property.FindPropertyRelative("easingtype").enumValueIndex == (int)easingTypes.custom)
+        int i = property.FindPropertyRelative("easingtype").enumValueIndex;
+        if(i == (int)easingTypes.custom || i == (int)easingTypes.customCut)
             EditorGUILayout.PropertyField(property.FindPropertyRelative("curve"), new GUIContent("Curve"));
         EditorGUI.EndProperty();
     }
