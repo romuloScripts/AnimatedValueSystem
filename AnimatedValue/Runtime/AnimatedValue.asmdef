@@ -1,0 +1,17 @@
+{
+    "name": "AnimatedValue",
+    "rootNamespace": "",
+    "references": [
+        "GUID:865ec293ea26396418817b567546b842",
+        "GUID:f5b4694910691df45b26a87d8a2426fc"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
