@@ -12,7 +12,7 @@ Animation components for Unity to animate easily.
 
 ## How to use:
 
-![alt text](https://i.imgur.com/1THdCmo.png)
+![alt text](https://i.imgur.com/y5hp2s2.png)
 
 ## Click to watch the video:
 [![Watch the video](https://i.imgur.com/GQZxUAu.gif)](https://youtu.be/P_g2XDb-QSY)
